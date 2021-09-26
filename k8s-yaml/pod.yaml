@@ -1,0 +1,40 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: csit-bot
+  labels:
+    app: zulip-bot
+spec:
+  containers:
+    - name: bot
+      image: zulip-bot
+      imagePullPolicy: Never
+      command:
+        - python
+        - /python-zulip-api/zulip/integrations/bridge_with_irc/irc-mirror.py
+        - --config-file=~/config/zuliprc
+        - --irc-server=irc.cs.hut.fi
+        - --channel=&csadmin
+        - --nick-prefix=csit
+        - --stream=general
+        - --topic=&csadmin
+        - --all-topics
+      volumeMounts:
+        - name: zuliprc-mount
+          mountPath: /config
+          readOnly: true
+      #resources:
+      #  limits:
+      #    memory: 100M
+      #    cpu: .1
+      #  requests: ...
+      #env:
+      #  - name: ...
+      #    value: ...
+      securityContext:
+        runAsNonRoot: true
+  volumes:
+    - name: zuliprc-mount
+      secret:
+        secretName: zuliprc-csit
