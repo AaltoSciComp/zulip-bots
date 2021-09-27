@@ -8,8 +8,7 @@ metadata:
 spec:
   containers:
     - name: bot
-      image: zulip-bot
-      imagePullPolicy: Never
+      image: aaltoscienceit/zulip-bot:0.1.0
       command:
         - python
         - /python-zulip-api/zulip/integrations/bridge_with_irc/irc-mirror.py
