@@ -1,0 +1,48 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zulip-bot-scicomp-deployment
+  labels:
+    app: zulip-bot-scicomp-deployment
+spec:
+  selector:
+    matchLabels:
+      app: zulip-bot-scicomp
+  template:
+    metadata:
+      labels:
+        app:
+          zulip-bot-scicomp
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: bot
+          image: aaltoscienceit/zulip-bot:0.1.0
+          command:
+            - python
+            - /python-zulip-api/zulip/integrations/bridge_with_irc/irc-mirror.py
+            - --config-file=~/config/zuliprc
+            - --irc-server=irc.cs.hut.fi
+            - --channel=&triton
+            - --nick-prefix=asc
+            - --stream=science-it
+            - --topic=&triton
+          volumeMounts:
+            - name: zuliprc-scicomp-mount
+              mountPath: /config
+              readOnly: true
+          #resources:
+          #  limits:
+          #    memory: 100M
+          #    cpu: .1
+          #  requests: ...
+          #env:
+          #  - name: ...
+          #    value: ...
+          securityContext:
+            runAsNonRoot: true
+      volumes:
+        - name: zuliprc-scicomp-mount
+          secret:
+            secretName: zuliprc-scicomp
