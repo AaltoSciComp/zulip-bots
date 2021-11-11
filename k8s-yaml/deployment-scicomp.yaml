@@ -28,6 +28,7 @@ spec:
             - --nick-prefix=asc
             - --stream=science-it
             - --topic=&triton
+            - --all-topics
           volumeMounts:
             - name: zuliprc-scicomp-mount
               mountPath: /config
