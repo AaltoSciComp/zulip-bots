@@ -1,0 +1,49 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zulip-bot-nbephys-deployment
+  labels:
+    app: zulip-bot-nbephys-deployment
+spec:
+  selector:
+    matchLabels:
+      app: zulip-bot-nbephys
+  template:
+    metadata:
+      labels:
+        app:
+          zulip-bot-nbephys
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: bot
+          image: aaltoscienceit/zulip-bot:0.1.0
+          command:
+            - python
+            - /python-zulip-api/zulip/integrations/bridge_with_irc/irc-mirror.py
+            - --config-file=~/config/zuliprc
+            - --irc-server=irc.cs.hut.fi
+            - --channel=&NBEPHYSITAdmins
+            - --nick-prefix=nbephys
+            - --stream=NBEPHYSITAdmin
+            - --topic=&NBEPHYSITAdmins
+            - --all-topics
+          volumeMounts:
+            - name: zuliprc-scicomp-mount
+              mountPath: /config
+              readOnly: true
+          #resources:
+          #  limits:
+          #    memory: 100M
+          #    cpu: .1
+          #  requests: ...
+          #env:
+          #  - name: ...
+          #    value: ...
+          securityContext:
+            runAsNonRoot: true
+      volumes:
+        - name: zuliprc-scicomp-mount
+          secret:
+            secretName: zuliprc-scicomp
