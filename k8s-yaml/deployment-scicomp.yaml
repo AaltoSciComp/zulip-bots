@@ -48,7 +48,7 @@ spec:
               command:
                 - sh
                 - -c
-                - test $(ps aux | grep [p]ython | wc -l) = 3 -a -n "$(netstat | grep irc-cs)"
+                - test $(ps aux -T | grep [p]ython | wc -l) = 5 -a -n "$(netstat | grep irc-cs)"
             initialDelaySeconds: 60
             periodSeconds: 60
       volumes:
