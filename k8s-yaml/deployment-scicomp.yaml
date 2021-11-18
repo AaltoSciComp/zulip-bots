@@ -43,6 +43,14 @@ spec:
           #    value: ...
           securityContext:
             runAsNonRoot: true
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - test $(ps aux | grep [p]ython | wc -l) = 3 -a -n "$(netstat | grep irc-cs)"
+            initialDelaySeconds: 60
+            periodSeconds: 60
       volumes:
         - name: zuliprc-scicomp-mount
           secret:
