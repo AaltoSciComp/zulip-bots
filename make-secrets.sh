@@ -16,3 +16,8 @@ if [ -e secrets/interrealm_bridge_config_scicomp_cs_jupyter.py ] ; then
     kubectl -n zulip-bots delete secret generic zulip-cs-sc-bridge-jupyter $@ --ignore-not-found=true
     kubectl -n zulip-bots create secret generic zulip-cs-sc-bridge-jupyter $@ --from-file=interrealm_bridge_config=secrets/interrealm_bridge_config_scicomp_cs_jupyter.py
 fi
+
+if [ -e secrets/interrealm_bridge_config_scicomp_cs_cs_public.py ] ; then
+    kubectl -n zulip-bots delete secret generic zulip-cs-sc-bridge-cs-public $@ --ignore-not-found=true
+    kubectl -n zulip-bots create secret generic zulip-cs-sc-bridge-cs-public $@ --from-file=interrealm_bridge_config=secrets/interrealm_bridge_config_scicomp_cs_cs_public.py
+fi

@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zulip-bot-cs-sc-bridge-cs-public
+  labels:
+    app: zulip-bot-cs-sc-bridge-cs-public
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zulip-bot-cs-sc-bridge-cs-public
+  template:
+    metadata:
+      labels:
+        app:
+          zulip-bot-cs-sc-bridge-cs-public
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: bot
+          image: aaltoscienceit/zulip-bot:0.1.0
+          command:
+            - python
+            - /python-zulip-api/zulip/integrations/bridge_between_zulips/run-interrealm-bridge
+            - --stream
+          volumeMounts:
+            - name: zulip-bridge-config-cs-sc-cs-public
+              mountPath: /python-zulip-api/zulip/integrations/bridge_between_zulips/interrealm_bridge_config.py
+              subPath: interrealm_bridge_config
+              readOnly: true
+          #resources:
+          #  limits:
+          #    memory: 100M
+          #    cpu: .1
+          #  requests: ...
+          #env:
+          #  - name: ...
+          #    value: ...
+          securityContext:
+            runAsNonRoot: true
+      volumes:
+        - name: zulip-bridge-config-cs-sc-cs-public
+          secret:
+            secretName: zulip-cs-sc-bridge-cs-public
